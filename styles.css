@@ -1,3 +1,8 @@
+html {
+    font-size: 0.52083vw; /* 1rem = 10px at 1920px viewport width */
+    min-font-size: 10px; /* Prevent font from becoming too small */
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
@@ -7,13 +12,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 1vh;
+    min-height: 100vh;
 }
 
 header {
     background-color: #004a87;
     color: white;
-    padding: 0.833vw 1.666vw;
+    padding: 1.6rem 3.2rem;
     border-bottom: 5px solid #ffd700;
 }
 
@@ -26,7 +31,7 @@ header {
 .logo a {
     color: white;
     text-decoration: none;
-    font-size: 1.25vw;
+    font-size: 2.4rem;
     font-weight: bold;
 }
 
@@ -38,28 +43,33 @@ nav ul {
 
 nav ul li {
     display: inline-block;
-    margin-left: 1.04vw;
+    margin-left: 2rem;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-size: 0.916vw;
+    font-size: 1.76rem;
 }
 
 main {
-    padding: 0.833vw;
+    padding: 1.6rem;
 }
 
 .content-wrapper {
-    max-width: 62.5vw; /* Max width for desktop (1200px at 1920px viewport) */
+    max-width: 120rem; /* Max width for desktop (1200px at 1920px viewport) */
+    max-width: 100vw;
+    max-height: 100vh;
     background-color: white; /* White background for the content area */
-    min-height: 1vh; /* Ensure it takes full viewport height */
+    min-height: 100vh; /* Ensure it takes full viewport height */
     box-sizing: border-box; /* Include padding in the width/height */
+    aspect-ratio: 2.219; /* Overall aspect ratio of content */
+    width: 100%;
+    height: 100%;
 }
 
 main {
-    padding: 0.833vw;
+    padding: 1.6rem;
     max-width: 100%; /* Ensure main doesn't overflow content-wrapper */
     box-sizing: border-box;
 }
@@ -71,8 +81,8 @@ h2 {
 .content-container {
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two equal columns */
-    gap: 2.08vw;
-    padding: 0 2.08vw;
+    gap: 4rem;
+    padding: 0 4rem;
     align-items: start; /* Align items to the top of their grid area */
 }
 
@@ -87,9 +97,9 @@ h2 {
 
 .image-carousel {
     position: relative;
-    max-width: 29.32vw; /* Original image width relative to 1200px content-wrapper */
+    max-width: 56.3rem; /* Original image width */
     width: 100%; /* Make it responsive below max-width */
-    height: 36.66vw; /* Original image height relative to 1200px content-wrapper */
+    height: 70.4rem; /* Original image height */
     overflow: hidden;
 }
 
@@ -113,14 +123,14 @@ h2 {
 
 .carousel-nav {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 1rem;
+    right: 1rem;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    padding: 5px 10px;
+    padding: 0.5rem 1rem;
     cursor: pointer;
     border-radius: 5px;
-    font-size: 20px;
+    font-size: 2rem;
     z-index: 10;
 }
 
@@ -131,25 +141,25 @@ h2 {
 }
 
 .slides-section iframe {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Lock aspect ratio to 16:9 */
+    width: 125.155rem; /* 16:9 aspect ratio based on height */
+    height: 70.4rem; /* Same height as image carousel */
     margin: 0;
     padding: 0;
 }
 
 .resources-text {
     color: #004a87;
-    font-size: 1.5vw;
+    font-size: 2.88rem;
     font-weight: bold;
-    margin-top: 1vw; /* Adjust this value for desired spacing */
+    margin-top: 1.92rem; /* Adjust this value for desired spacing */
     width: 100%; /* Fill parent width */
     text-align: left;
 }
 
 .mathcounts-trainer-link {
     color: #004a87;
-    font-size: 1vw; /* Smaller than Other Resources */
-    margin-top: 0.5vw; /* Adjust for spacing from Other Resources */
+    font-size: 1.92rem; /* Smaller than Other Resources */
+    margin-top: 0.96rem; /* Adjust for spacing from Other Resources */
     width: 100%; /* Fill parent width */
     text-align: left;
 }
@@ -158,20 +168,20 @@ h2 {
     background-color: #004a87;
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 0.833vw;
+    padding: 1.6rem 3.2rem;
+    font-size: 1.6rem;
     cursor: pointer;
-    margin-bottom: 0.52vw;
+    margin-bottom: 1rem;
 }
 
 #open-slides-btn {
     background-color: #004a87;
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 0.833vw;
+    padding: 1.6rem 3.2rem;
+    font-size: 1.6rem;
     cursor: pointer;
-    margin-bottom: 0.52vw;
+    margin-bottom: 1rem;
 }
 
 #fullscreen-overlay {
@@ -189,10 +199,10 @@ h2 {
 
 #close-btn {
     position: absolute;
-    top: 1.38vh;
-    right: 1.82vw;
+    top: 2.65rem;
+    right: 3.5rem;
     color: #fff;
-    font-size: 2.08vw;
+    font-size: 4rem;
     font-weight: bold;
     cursor: pointer;
 }
@@ -215,7 +225,7 @@ h2 {
     max-width: 100%;
     height: auto;
     display: block; /* Remove extra space below image */
-    margin: 0 auto 10px auto; /* Center horizontally and add bottom margin */
+    margin: 0 auto 1rem auto; /* Center horizontally and add bottom margin */
     object-fit: contain; /* Ensure the entire image is visible */
 }
 
@@ -248,10 +258,10 @@ h2 {
 
 #close-slides-btn {
     position: absolute;
-    top: 1.38vh;
-    right: 1.82vw;
+    top: 2.65rem;
+    right: 3.5rem;
     color: #fff;
-    font-size: 2.08vw;
+    font-size: 4rem;
     font-weight: bold;
     cursor: pointer;
 }
