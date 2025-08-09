@@ -57,5 +57,10 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     fullscreenOverlay.classList.remove('show-overlay');
     fullscreenSlidesOverlay.classList.remove('show-overlay');
+
+    if (carouselImages.length > 0) {
+        carouselImages[0].style.opacity = '1';
+    }
+
     showImage(currentImageIndex);
 });
