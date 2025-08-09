@@ -1,0 +1,190 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    color: #333;
+    background-color: white; /* Changed to white to remove the grey border */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #004a87;
+    color: white;
+    padding: 0.833vw 1.666vw;
+    border-bottom: 5px solid #ffd700;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.25vw;
+    font-weight: bold;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+nav ul li {
+    display: inline-block;
+    margin-left: 1.04vw;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.916vw;
+}
+
+main {
+    padding: 0.833vw;
+}
+
+.content-wrapper {
+    max-width: 100vh * (16 / 9); /* Max width based on 16:9 aspect ratio of viewport height */
+    background-color: white; /* White background for the content area */
+    min-height: 100vh; /* Ensure it takes full viewport height */
+    box-sizing: border-box; /* Include padding in the width/height */
+}
+
+main {
+    padding: 0.833vw;
+    max-width: 100%; /* Ensure main doesn't overflow content-wrapper */
+    box-sizing: border-box;
+}
+
+h2 {
+    color: #004a87;
+}
+
+.content-container {
+    display: flex;
+    padding: 0 2.08vw;
+    gap: 2.08vw;
+}
+
+.pdf-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pdf-section embed {
+}
+
+.slides-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slides-section iframe {
+}
+
+.resources-text {
+    color: #004a87;
+    font-size: 1.5vw;
+    font-weight: bold;
+    margin-top: 1vw; /* Adjust this value for desired spacing */
+    width: 960px; /* Same width as the iframe */
+    text-align: left;
+}
+
+.mathcounts-trainer-link {
+    color: #004a87;
+    font-size: 1vw; /* Smaller than Other Resources */
+    margin-top: 0.5vw; /* Adjust for spacing from Other Resources */
+    width: 960px; /* Same width as the iframe */
+    text-align: left;
+}
+
+#open-pdf-btn {
+    background-color: #004a87;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.833vw;
+    cursor: pointer;
+    margin-bottom: 0.52vw;
+}
+
+#open-slides-btn {
+    background-color: #004a87;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.833vw;
+    cursor: pointer;
+    margin-bottom: 0.52vw;
+}
+
+#fullscreen-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+}
+
+#fullscreen-pdf {
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+
+#close-btn {
+    position: absolute;
+    top: 1.38vh;
+    right: 1.82vw;
+    color: #fff;
+    font-size: 2.08vw;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#fullscreen-slides-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+}
+
+#fullscreen-slides {
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+
+#close-slides-btn {
+    position: absolute;
+    top: 1.38vh;
+    right: 1.82vw;
+    color: #fff;
+    font-size: 2.08vw;
+    font-weight: bold;
+    cursor: pointer;
+}
