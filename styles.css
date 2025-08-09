@@ -52,7 +52,7 @@ main {
 }
 
 .content-wrapper {
-    max-width: calc(100vh * (16 / 9) * 0.75); /* Max width based on 16:9 aspect ratio of viewport height, 25% smaller */
+    max-width: calc(100vh * (16 / 9) * 10); /* Max width based on 16:9 aspect ratio of viewport height, 25% smaller */
     background-color: white; /* White background for the content area */
     min-height: 100vh; /* Ensure it takes full viewport height */
     box-sizing: border-box; /* Include padding in the width/height */
