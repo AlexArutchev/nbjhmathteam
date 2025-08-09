@@ -52,7 +52,7 @@ main {
 }
 
 .content-wrapper {
-    max-width: calc(100vh * (16 / 9) * 10); /* Max width based on 16:9 aspect ratio of viewport height, 25% smaller */
+    max-width: 62.5vw; /* Max width for desktop (1200px at 1920px viewport) */
     background-color: white; /* White background for the content area */
     min-height: 1vh; /* Ensure it takes full viewport height */
     box-sizing: border-box; /* Include padding in the width/height */
@@ -69,13 +69,14 @@ h2 {
 }
 
 .content-container {
-    display: flex;
-    padding: 0 2.08vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
     gap: 2.08vw;
+    padding: 0 2.08vw;
+    align-items: start; /* Align items to the top of their grid area */
 }
 
 .pdf-section {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -86,8 +87,9 @@ h2 {
 
 .image-carousel {
     position: relative;
-    width: 563px; /* Same as image width */
-    height: 704px; /* Same as image height */
+    max-width: 29.32vw; /* Original image width relative to 1200px content-wrapper */
+    width: 100%; /* Make it responsive below max-width */
+    height: 36.66vw; /* Original image height relative to 1200px content-wrapper */
     overflow: hidden;
 }
 
@@ -97,8 +99,12 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
+    object-fit: contain; /* Ensure image scales down to fit while maintaining aspect ratio */
     transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-image:not(.active) {
+    opacity: 0;
 }
 
 .carousel-image.active {
@@ -119,13 +125,16 @@ h2 {
 }
 
 .slides-section {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .slides-section iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Lock aspect ratio to 16:9 */
+    margin: 0;
+    padding: 0;
 }
 
 .resources-text {
@@ -133,7 +142,7 @@ h2 {
     font-size: 1.5vw;
     font-weight: bold;
     margin-top: 1vw; /* Adjust this value for desired spacing */
-    width: 960px; /* Same width as the iframe */
+    width: 100%; /* Fill parent width */
     text-align: left;
 }
 
@@ -141,7 +150,7 @@ h2 {
     color: #004a87;
     font-size: 1vw; /* Smaller than Other Resources */
     margin-top: 0.5vw; /* Adjust for spacing from Other Resources */
-    width: 960px; /* Same width as the iframe */
+    width: 100%; /* Fill parent width */
     text-align: left;
 }
 
@@ -229,7 +238,7 @@ h2 {
 }
 
 #fullscreen-slides {
-    width: 90%;
+    width: 100%;
     height: 90%;
     position: absolute;
     top: 50%;
@@ -246,3 +255,5 @@ h2 {
     font-weight: bold;
     cursor: pointer;
 }
+
+
