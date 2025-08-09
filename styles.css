@@ -1,3 +1,8 @@
+html {
+    font-size: 0.52083vw; /* 1rem = 10px at 1920px viewport width */
+    min-font-size: 10px; /* Prevent font from becoming too small */
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
@@ -13,7 +18,7 @@ body {
 header {
     background-color: #004a87;
     color: white;
-    padding: 0.833vw 1.666vw;
+    padding: 1.6rem 3.2rem;
     border-bottom: 5px solid #ffd700;
 }
 
@@ -26,7 +31,7 @@ header {
 .logo a {
     color: white;
     text-decoration: none;
-    font-size: 1.25vw;
+    font-size: 2.4rem;
     font-weight: bold;
 }
 
@@ -38,28 +43,33 @@ nav ul {
 
 nav ul li {
     display: inline-block;
-    margin-left: 1.04vw;
+    margin-left: 2rem;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-size: 0.916vw;
+    font-size: 1.76rem;
 }
 
 main {
-    padding: 0.833vw;
+    padding: 1.6rem;
 }
 
 .content-wrapper {
-    max-width: 100vh * (16 / 9); /* Max width based on 16:9 aspect ratio of viewport height */
+    max-width: 120rem; /* Max width for desktop (1200px at 1920px viewport) */
+    max-width: 100vw;
+    max-height: 100vh;
     background-color: white; /* White background for the content area */
     min-height: 100vh; /* Ensure it takes full viewport height */
     box-sizing: border-box; /* Include padding in the width/height */
+    aspect-ratio: 2.219; /* Overall aspect ratio of content */
+    width: 100%;
+    height: 100%;
 }
 
 main {
-    padding: 0.833vw;
+    padding: 1.6rem;
     max-width: 100%; /* Ensure main doesn't overflow content-wrapper */
     box-sizing: border-box;
 }
@@ -69,13 +79,14 @@ h2 {
 }
 
 .content-container {
-    display: flex;
-    padding: 0 2.08vw;
-    gap: 2.08vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 4rem;
+    padding: 0 4rem;
+    align-items: start; /* Align items to the top of their grid area */
 }
 
 .pdf-section {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -84,30 +95,72 @@ h2 {
 .pdf-section embed {
 }
 
+.image-carousel {
+    position: relative;
+    max-width: 56.3rem; /* Original image width */
+    width: 100%; /* Make it responsive below max-width */
+    height: 70.4rem; /* Original image height */
+    overflow: hidden;
+}
+
+.carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure image scales down to fit while maintaining aspect ratio */
+    transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-image:not(.active) {
+    opacity: 0;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}
+
+.carousel-nav {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 2rem;
+    z-index: 10;
+}
+
 .slides-section {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .slides-section iframe {
+    width: 125.155rem; /* 16:9 aspect ratio based on height */
+    height: 70.4rem; /* Same height as image carousel */
+    margin: 0;
+    padding: 0;
 }
 
 .resources-text {
     color: #004a87;
-    font-size: 1.5vw;
+    font-size: 2.88rem;
     font-weight: bold;
-    margin-top: 1vw; /* Adjust this value for desired spacing */
-    width: 960px; /* Same width as the iframe */
+    margin-top: 1.92rem; /* Adjust this value for desired spacing */
+    width: 100%; /* Fill parent width */
     text-align: left;
 }
 
 .mathcounts-trainer-link {
     color: #004a87;
-    font-size: 1vw; /* Smaller than Other Resources */
-    margin-top: 0.5vw; /* Adjust for spacing from Other Resources */
-    width: 960px; /* Same width as the iframe */
+    font-size: 1.92rem; /* Smaller than Other Resources */
+    margin-top: 0.96rem; /* Adjust for spacing from Other Resources */
+    width: 100%; /* Fill parent width */
     text-align: left;
 }
 
@@ -115,24 +168,26 @@ h2 {
     background-color: #004a87;
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 0.833vw;
+    padding: 1.6rem 3.2rem;
+    font-size: 1.6rem;
     cursor: pointer;
-    margin-bottom: 0.52vw;
+    margin-bottom: 1rem;
 }
 
 #open-slides-btn {
     background-color: #004a87;
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 0.833vw;
+    padding: 1.6rem 3.2rem;
+    font-size: 1.6rem;
     cursor: pointer;
-    margin-bottom: 0.52vw;
+    margin-bottom: 1rem;
 }
 
 #fullscreen-overlay {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     position: fixed;
     top: 0;
     left: 0;
@@ -140,28 +195,44 @@ h2 {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     z-index: 1000;
-}
-
-#fullscreen-pdf {
-    width: 90%;
-    height: 90%;
-    position: absolute;
-    top: 5%;
-    left: 5%;
 }
 
 #close-btn {
     position: absolute;
-    top: 1.38vh;
-    right: 1.82vw;
+    top: 2.65rem;
+    right: 3.5rem;
     color: #fff;
-    font-size: 2.08vw;
+    font-size: 4rem;
     font-weight: bold;
     cursor: pointer;
 }
 
+#fullscreen-pdf-content {
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    background-color: white; /* Ensure a white background for the content area */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center images horizontally */
+}
+
+#fullscreen-pdf-content img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Remove extra space below image */
+    margin: 0 auto 1rem auto; /* Center horizontally and add bottom margin */
+    object-fit: contain; /* Ensure the entire image is visible */
+}
+
 #fullscreen-slides-overlay {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     position: fixed;
     top: 0;
     left: 0;
@@ -171,20 +242,29 @@ h2 {
     z-index: 1000;
 }
 
+.show-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 #fullscreen-slides {
-    width: 90%;
+    width: 100%;
     height: 90%;
     position: absolute;
-    top: 5%;
-    left: 5%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #close-slides-btn {
     position: absolute;
-    top: 1.38vh;
-    right: 1.82vw;
+    top: 2.65rem;
+    right: 3.5rem;
     color: #fff;
-    font-size: 2.08vw;
+    font-size: 4rem;
     font-weight: bold;
     cursor: pointer;
+    z-index: 1001;
 }
+
+
