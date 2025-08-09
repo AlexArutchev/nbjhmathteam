@@ -264,6 +264,7 @@ h2 {
     font-size: 4rem;
     font-weight: bold;
     cursor: pointer;
+    z-index: 1001;
 }
 
 
