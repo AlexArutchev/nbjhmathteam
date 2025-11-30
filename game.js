@@ -1,69 +1,105 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDWVBJ4YuB33ya5r0BDKV-d6nG-n_a58IU",
+    authDomain: "nbjhmathteam.firebaseapp.com",
+    projectId: "nbjhmathteam",
+    storageBucket: "nbjhmathteam.firebasestorage.app",
+    messagingSenderId: "735558400428",
+    appId: "1:735558400428:web:4971329581fa9f0d256209",
+    measurementId: "G-VJ0VFMGKHE"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 document.addEventListener('DOMContentLoaded', () => {
     // Username and Leaderboard System
     let currentUsername = null;
+    let gameDataCache = { currentUser: null, users: {} };
+    let unsubscribeLeaderboard = null;
 
-    // LocalStorage Management
-    function getGameData() {
-        const data = localStorage.getItem('amc8GameData');
-        return data ? JSON.parse(data) : { currentUser: null, users: {} };
+    // Firestore Communication
+    async function getGameData() {
+        // In Firestore, we don't fetch "all" data at once usually, 
+        // but for compatibility with existing logic structure, we'll maintain a local cache
+        // updated via listeners.
+        return gameDataCache;
     }
 
-    function saveGameData(data) {
-        localStorage.setItem('amc8GameData', JSON.stringify(data));
+    async function saveUserScore(username, userData) {
+        try {
+            await setDoc(doc(db, "users", username), userData, { merge: true });
+        } catch (error) {
+            console.error('Error saving game data:', error);
+        }
     }
 
-    function getUserData(username) {
-        const gameData = getGameData();
-        return gameData.users[username] || {
-            totalScore: 0,
-            bestBatchScore: 0,
-            gamesPlayed: 0,
-            lastPlayed: new Date().toISOString()
-        };
+    async function getUserData(username) {
+        const docRef = doc(db, "users", username);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            return {
+                totalScore: 0,
+                bestBatchScore: 0,
+                gamesPlayed: 0,
+                lastPlayed: new Date().toISOString()
+            };
+        }
     }
 
-    function updateUserScore(username, batchScore, addToTotal) {
-        const gameData = getGameData();
-        const userData = getUserData(username);
+    async function updateUserScore(username, batchScore, addToTotal) {
+        let userData = await getUserData(username);
 
-        userData.gamesPlayed++;
+        userData.gamesPlayed = (userData.gamesPlayed || 0) + 1;
         userData.lastPlayed = new Date().toISOString();
 
-        if (batchScore > userData.bestBatchScore) {
+        if (batchScore > (userData.bestBatchScore || 0)) {
             userData.bestBatchScore = batchScore;
         }
 
         if (addToTotal) {
-            userData.totalScore += batchScore;
+            userData.totalScore = (userData.totalScore || 0) + batchScore;
         }
 
-        gameData.users[username] = userData;
-        gameData.currentUser = username;
-        saveGameData(gameData);
+        await saveUserScore(username, userData);
 
-        updateLeaderboard();
+        // No need to manually update leaderboard, the listener will handle it
         updateUserStats();
     }
 
-    function getLeaderboard(type = 'batch') {
-        const gameData = getGameData();
-        const users = gameData.users;
+    // Real-time Leaderboard Listener
+    function setupLeaderboardListener() {
+        const usersRef = collection(db, "users");
 
-        const leaderboard = Object.entries(users).map(([username, data]) => ({
-            username,
-            score: type === 'batch' ? data.bestBatchScore : data.totalScore
-        }));
+        // We'll listen to all users for now (assuming small scale) 
+        // or we could create specific queries for top scores if scaling up.
+        // For simplicity and to match previous logic, we'll fetch all and sort client-side
+        // or better, let's use queries for efficiency.
 
-        leaderboard.sort((a, b) => b.score - a.score);
-        return leaderboard.slice(0, 3);
-    }
+        const q = query(usersRef, orderBy("bestBatchScore", "desc"), limit(10));
 
-    function updateLeaderboard() {
-        const batchLeaderboard = getLeaderboard('batch');
-        const totalLeaderboard = getLeaderboard('total');
+        unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
+            const batchLeaderboard = [];
+            snapshot.forEach((doc) => {
+                batchLeaderboard.push({ username: doc.id, score: doc.data().bestBatchScore });
+            });
+            renderLeaderboard('batch-leaderboard', batchLeaderboard);
+        });
 
-        renderLeaderboard('batch-leaderboard', batchLeaderboard);
-        renderLeaderboard('total-leaderboard', totalLeaderboard);
+        const qTotal = query(usersRef, orderBy("totalScore", "desc"), limit(10));
+        onSnapshot(qTotal, (snapshot) => {
+            const totalLeaderboard = [];
+            snapshot.forEach((doc) => {
+                totalLeaderboard.push({ username: doc.id, score: doc.data().totalScore });
+            });
+            renderLeaderboard('total-leaderboard', totalLeaderboard);
+        });
     }
 
     function renderLeaderboard(elementId, leaderboard) {
@@ -75,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        leaderboard.forEach((entry, index) => {
+        // Take top 3
+        leaderboard.slice(0, 3).forEach((entry, index) => {
             const item = document.createElement('div');
             item.className = `leaderboard-item rank-${index + 1}`;
 
@@ -98,10 +135,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function updateUserStats() {
+    async function updateUserStats() {
         if (!currentUsername) return;
 
-        const userData = getUserData(currentUsername);
+        const userData = await getUserData(currentUsername);
         const statsContainer = document.getElementById('user-stats-content');
 
         statsContainer.innerHTML = `
@@ -136,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('show');
     }
 
-    function handleUsernameSubmit() {
+    async function handleUsernameSubmit() {
         const input = document.getElementById('username-input');
         const username = input.value.trim();
 
@@ -151,26 +188,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         currentUsername = username;
-        const gameData = getGameData();
-        gameData.currentUser = username;
+        localStorage.setItem('amc8_username', username); // Persist locally for convenience
 
-        if (!gameData.users[username]) {
-            gameData.users[username] = {
+        // Ensure user exists in DB
+        const userData = await getUserData(username);
+        if (!userData.gamesPlayed) {
+            await saveUserScore(username, {
                 totalScore: 0,
                 bestBatchScore: 0,
                 gamesPlayed: 0,
                 lastPlayed: new Date().toISOString()
-            };
+            });
         }
 
-        saveGameData(gameData);
         hideUsernameModal();
-        updateLeaderboard();
         updateUserStats();
 
         // Load user's total score
-        const userData = getUserData(username);
-        totalScore = userData.totalScore;
+        totalScore = userData.totalScore || 0;
         updateScoreDisplay();
     }
 
@@ -178,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('leaderboard-toggle').addEventListener('click', () => {
         const panel = document.getElementById('leaderboard-panel');
         panel.classList.toggle('hidden');
-        updateLeaderboard();
         updateUserStats();
     });
 
@@ -213,16 +247,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let streak = 0;
 
     // Check for existing user on load
-    const gameData = getGameData();
-    if (gameData.currentUser) {
-        currentUsername = gameData.currentUser;
-        const userData = getUserData(currentUsername);
-        totalScore = userData.totalScore;
-        updateLeaderboard();
+    const savedUsername = localStorage.getItem('amc8_username');
+    if (savedUsername) {
+        currentUsername = savedUsername;
         updateUserStats();
+        getUserData(currentUsername).then(data => {
+            totalScore = data.totalScore || 0;
+            updateScoreDisplay();
+        });
     } else {
         showUsernameModal();
     }
+
+    // Initialize Leaderboard Listener
+    setupLeaderboardListener();
 
     // Sound effects using Web Audio API
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -511,12 +549,12 @@ document.addEventListener('DOMContentLoaded', () => {
         startTimer();
     }
 
-    function endGame() {
-        // Save scores to localStorage
+    async function endGame() {
+        // Save scores to server
         if (currentUsername) {
-            updateUserScore(currentUsername, batchScore, true);
+            await updateUserScore(currentUsername, batchScore, true);
             // Update the displayed total score
-            const userData = getUserData(currentUsername);
+            const userData = await getUserData(currentUsername);
             totalScore = userData.totalScore;
             updateScoreDisplay();
         }
