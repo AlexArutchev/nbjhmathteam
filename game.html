@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBJH Math Team - AMC 8 Game</title>
+    <link rel="stylesheet" href="styles.css?v=8">
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <a href="/">NBJH Math Team</a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="game.html">Game</a></li>
+                        <li><a href="resources.html">Resources</a></li>
+                        <li><a href="index.html">Home</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Username Modal -->
+        <div id="username-modal" class="modal">
+            <div class="modal-content">
+                <h2>Welcome to AMC 8 Game!</h2>
+                <p>Enter your username to track your scores:</p>
+                <input type="text" id="username-input" placeholder="Enter username" maxlength="20">
+                <button id="username-submit">Start Playing</button>
+                <p class="username-hint">Your scores will be saved to this username</p>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div id="leaderboard-container">
+            <button id="leaderboard-toggle">🏆 Leaderboard</button>
+            <div id="leaderboard-panel" class="hidden">
+                <div class="leaderboard-header">
+                    <h3>🏆 Leaderboard</h3>
+                    <button id="leaderboard-close">×</button>
+                </div>
+                <div class="leaderboard-content">
+                    <div class="leaderboard-section">
+                        <h4>🥇 Best Batch Scores</h4>
+                        <div id="batch-leaderboard" class="leaderboard-list"></div>
+                    </div>
+                    <div class="leaderboard-section">
+                        <h4>⭐ Total Scores</h4>
+                        <div id="total-leaderboard" class="leaderboard-list"></div>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <h4>Your Stats</h4>
+                    <div id="user-stats-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <main>
+            <section id="game-page">
+                <div class="game-container">
+                    <div class="game-info-bar">
+                        <div id="timer-section">
+                            <p>Time: <span id="timer">0</span>s</p>
+                        </div>
+                        <div id="score-section">
+                            <p>Batch Score: <span id="batch-score">0</span></p>
+                            <p>Total Score: <span id="total-score">0</span></p>
+                        </div>
+                    </div>
+                    <div id="progress-container">
+                        <div id="progress-bar"></div>
+                        <div id="progress-text">0/10</div>
+                    </div>
+                    <div id="streak-container" style="display: none;">
+                        <span id="streak-emoji">⭐</span>
+                        <span id="streak-count">0</span>
+                        <span id="streak-text">Streak</span>
+                    </div>
+                    <div id="problem-container">
+                        <img id="problem-image" src="" alt="Math Problem">
+                    </div>
+                    <a id="solution-link" href="#" target="_blank" style="display: none;">View Solution</a>
+                    <div id="answer-section">
+                        <div id="answer-buttons">
+                            <button class="answer-btn">A</button>
+                            <button class="answer-btn">B</button>
+                            <button class="answer-btn">C</button>
+                            <button class="answer-btn">D</button>
+                            <button class="answer-btn">E</button>
+                        </div>
+                    </div>
+                    <div id="result-section">
+                        <p id="result"></p>
+                    </div>
+                    <div id="game-controls">
+                        <button id="next-problem" style="display: none;">Next Problem</button>
+                        <button id="restart-game" style="display: none;">Play Again</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>
