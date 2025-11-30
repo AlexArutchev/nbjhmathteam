@@ -21,6 +21,11 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', () => {
     fullscreenSlidesOverlay.classList.remove('show-overlay');
+=======
+document.addEventListener('DOMContentLoaded', () => {
+    fullscreenSlidesOverlay.classList.remove('show-overlay');
+>>>>>>> d64c7bfdaf1f67ae645dca49e798cb29cc0210cd
 });
