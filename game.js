@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateScoreDisplay();
         }
 
-        const finalMessage = `🎊 Game Complete! 🎊\n\nFinal Score: ${batchScore}/${gameProblems.length * 3}\n${batchScore >= 25 ? '🌟 Outstanding!' : batchScore >= 20 ? '🎉 Great job!' : batchScore >= 15 ? '👍 Good work!' : '💪 Keep practicing!'}`;
+        const finalMessage = `🎊 Game Complete! 🎊\n\nFinal Score: ${batchScore}/${gameProblems.length * 3}\n${batchScore >= 25 ? '🌟 Outstanding!' : batchScore >= 20 ? '🎉 Great job!' : batchScore >= 15 ? '👍 Good work!' : 'Keep playing!'}`;
         resultText.textContent = finalMessage;
         resultText.className = 'correct celebration-pulse';
         resultText.style.whiteSpace = 'pre-line';
