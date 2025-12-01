@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDWVBJ4YuB33ya5r0BDKV-d6nG-n_a58IU",
@@ -18,32 +18,35 @@ const db = getFirestore(app);
 document.addEventListener('DOMContentLoaded', () => {
     // Username and Leaderboard System
     let currentUsername = null;
-    let gameDataCache = { currentUser: null, users: {} };
-    let unsubscribeLeaderboard = null;
 
-    // Firestore Communication
-    async function getGameData() {
-        // In Firestore, we don't fetch "all" data at once usually, 
-        // but for compatibility with existing logic structure, we'll maintain a local cache
-        // updated via listeners.
-        return gameDataCache;
-    }
-
+    // Firestore Communication with error handling
     async function saveUserScore(username, userData) {
         try {
             await setDoc(doc(db, "users", username), userData, { merge: true });
+            console.log('Score saved successfully for', username);
         } catch (error) {
             console.error('Error saving game data:', error);
+            alert('Failed to save score. Check console for details.');
         }
     }
 
     async function getUserData(username) {
-        const docRef = doc(db, "users", username);
-        const docSnap = await getDoc(docRef);
+        try {
+            const docRef = doc(db, "users", username);
+            const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            return docSnap.data();
-        } else {
+            if (docSnap.exists()) {
+                return docSnap.data();
+            } else {
+                return {
+                    totalScore: 0,
+                    bestBatchScore: 0,
+                    gamesPlayed: 0,
+                    lastPlayed: new Date().toISOString()
+                };
+            }
+        } catch (error) {
+            console.error('Error getting user data:', error);
             return {
                 totalScore: 0,
                 bestBatchScore: 0,
@@ -54,51 +57,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function updateUserScore(username, batchScore, addToTotal) {
-        let userData = await getUserData(username);
+        try {
+            let userData = await getUserData(username);
 
-        userData.gamesPlayed = (userData.gamesPlayed || 0) + 1;
-        userData.lastPlayed = new Date().toISOString();
+            userData.gamesPlayed = (userData.gamesPlayed || 0) + 1;
+            userData.lastPlayed = new Date().toISOString();
 
-        if (batchScore > (userData.bestBatchScore || 0)) {
-            userData.bestBatchScore = batchScore;
+            if (batchScore > (userData.bestBatchScore || 0)) {
+                userData.bestBatchScore = batchScore;
+            }
+
+            if (addToTotal) {
+                userData.totalScore = (userData.totalScore || 0) + batchScore;
+            }
+
+            await saveUserScore(username, userData);
+
+            // Update local display
+            updateUserStats();
+        } catch (error) {
+            console.error('Error updating user score:', error);
         }
-
-        if (addToTotal) {
-            userData.totalScore = (userData.totalScore || 0) + batchScore;
-        }
-
-        await saveUserScore(username, userData);
-
-        // No need to manually update leaderboard, the listener will handle it
-        updateUserStats();
     }
 
-    // Real-time Leaderboard Listener
+    // Real-time Leaderboard Listener with error handling
     function setupLeaderboardListener() {
         const usersRef = collection(db, "users");
 
-        // We'll listen to all users for now (assuming small scale) 
-        // or we could create specific queries for top scores if scaling up.
-        // For simplicity and to match previous logic, we'll fetch all and sort client-side
-        // or better, let's use queries for efficiency.
+        // Batch leaderboard
+        const qBatch = query(usersRef, orderBy("bestBatchScore", "desc"), limit(10));
 
-        const q = query(usersRef, orderBy("bestBatchScore", "desc"), limit(10));
-
-        unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
+        onSnapshot(qBatch, (snapshot) => {
             const batchLeaderboard = [];
             snapshot.forEach((doc) => {
-                batchLeaderboard.push({ username: doc.id, score: doc.data().bestBatchScore });
+                const data = doc.data();
+                if (data.bestBatchScore) {
+                    batchLeaderboard.push({ username: doc.id, score: data.bestBatchScore });
+                }
             });
             renderLeaderboard('batch-leaderboard', batchLeaderboard);
+        }, (error) => {
+            console.error('Error listening to batch leaderboard:', error);
+            // Fallback: try to fetch once
+            getDocs(qBatch).then(snapshot => {
+                const batchLeaderboard = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.bestBatchScore) {
+                        batchLeaderboard.push({ username: doc.id, score: data.bestBatchScore });
+                    }
+                });
+                renderLeaderboard('batch-leaderboard', batchLeaderboard);
+            });
         });
 
+        // Total leaderboard
         const qTotal = query(usersRef, orderBy("totalScore", "desc"), limit(10));
         onSnapshot(qTotal, (snapshot) => {
             const totalLeaderboard = [];
             snapshot.forEach((doc) => {
-                totalLeaderboard.push({ username: doc.id, score: doc.data().totalScore });
+                const data = doc.data();
+                if (data.totalScore) {
+                    totalLeaderboard.push({ username: doc.id, score: data.totalScore });
+                }
             });
             renderLeaderboard('total-leaderboard', totalLeaderboard);
+        }, (error) => {
+            console.error('Error listening to total leaderboard:', error);
+            // Fallback: try to fetch once
+            getDocs(qTotal).then(snapshot => {
+                const totalLeaderboard = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.totalScore) {
+                        totalLeaderboard.push({ username: doc.id, score: data.totalScore });
+                    }
+                });
+                renderLeaderboard('total-leaderboard', totalLeaderboard);
+            });
         });
     }
 
@@ -126,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const score = document.createElement('span');
             score.className = 'leaderboard-score';
-            score.textContent = entry.score;
+            score.textContent = entry.score || 0;
 
             item.appendChild(rank);
             item.appendChild(name);
@@ -148,15 +184,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="stat-item">
                 <span class="stat-label">Games Played:</span>
-                <span class="stat-value">${userData.gamesPlayed}</span>
+                <span class="stat-value">${userData.gamesPlayed || 0}</span>
             </div>
             <div class="stat-item">
                 <span class="stat-label">Best Batch:</span>
-                <span class="stat-value">${userData.bestBatchScore}</span>
+                <span class="stat-value">${userData.bestBatchScore || 0}</span>
             </div>
             <div class="stat-item">
                 <span class="stat-label">Total Score:</span>
-                <span class="stat-value">${userData.totalScore}</span>
+                <span class="stat-value">${userData.totalScore || 0}</span>
             </div>
         `;
     }
@@ -550,12 +586,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function endGame() {
-        // Save scores to server
+        // Save scores to Firebase
         if (currentUsername) {
             await updateUserScore(currentUsername, batchScore, true);
             // Update the displayed total score
             const userData = await getUserData(currentUsername);
-            totalScore = userData.totalScore;
+            totalScore = userData.totalScore || 0;
             updateScoreDisplay();
         }
 
