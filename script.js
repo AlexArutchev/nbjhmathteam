@@ -3,10 +3,6 @@ const openSlidesBtn = document.getElementById('open-slides-btn');
 const fullscreenSlidesOverlay = document.getElementById('fullscreen-slides-overlay');
 const closeSlidesBtn = document.getElementById('close-slides-btn');
 
-
-
-
-
 openSlidesBtn.addEventListener('click', () => {
     fullscreenSlidesOverlay.classList.add('show-overlay');
 });
