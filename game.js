@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-            console.log('Problems loaded:', problems);
+
             startGame();
         } catch (error) {
             console.error('Error loading problems:', error);
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayProblem() {
         if (currentProblemIndex < gameProblems.length) {
             const problem = gameProblems[currentProblemIndex];
-            console.log('Displaying problem:', problem);
+
             problemImage.src = problem.problemPath;
             problemImage.onerror = () => {
                 console.error('Image failed to load:', problem.problemPath);
