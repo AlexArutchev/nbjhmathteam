@@ -201,14 +201,111 @@ h1 {
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
 }
 
-.slides-section iframe {
+.slides-iframe-wrapper {
+    position: relative;
     width: 100%;
-    max-width: 125.155rem;
-    height: 70.4rem;
-    margin: 0;
+    height: 0;
+    padding-bottom: calc(56.25% + 40px);
+    overflow: hidden;
+}
+
+.slides-iframe-wrapper iframe {
+    position: absolute;
+    top: -8px;
+    left: -3px;
+    width: calc(100% + 6px);
+    height: calc(100% + 11px);
+    border: none;
+    outline: none;
+    display: block;
+}
+
+/* Covers the "Google Slides" branding + menu on the right side of the footer
+   while keeping the native ‹ [N] › navigation arrows visible on the left */
+.slides-branding-cover {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 85%;
+    height: 40px;
+    background: #f8f9fa;
+    z-index: 2;
+}
+
+.slide-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #004a87;
+    font-size: 2.6rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1;
     padding: 0;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.slides-iframe-wrapper:hover .slide-arrow {
+    opacity: 1;
+}
+
+.slide-arrow:hover {
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    transform: translateY(-50%) scale(1.08);
+}
+
+.slide-arrow:active {
+    transform: translateY(-50%) scale(0.96);
+}
+
+.slide-arrow-prev { left: 1.4rem; }
+.slide-arrow-next { right: 1.4rem; }
+
+.slides-control-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1.4rem;
+    width: 100%;
+}
+
+.slide-ctrl-btn {
+    width: 4.2rem;
+    height: 4.2rem;
+    border-radius: 1.2rem;
+    border: 1px solid #e3eaf2;
+    background: #fff;
+    color: #004a87;
+    font-size: 2.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(10, 37, 64, 0.06);
+    transition: all 0.2s ease;
+    line-height: 1;
+    padding: 0;
+    font-family: inherit;
+}
+
+.slide-ctrl-btn:hover {
+    background: #f5f8fc;
+    box-shadow: 0 2px 6px rgba(10, 37, 64, 0.1);
+}
+
+.slide-ctrl-btn:active {
+    transform: scale(0.95);
 }
 
 .resources-text {
@@ -284,27 +381,28 @@ h1 {
 }
 
 #open-slides-btn {
-    background: #004a87;
-    color: white;
-    border: none;
-    padding: 1.6rem 3.2rem;
-    font-size: 1.6rem;
+    margin-left: auto;
+    height: 4.2rem;
+    padding: 0 1.6rem;
+    font-size: 1.4rem;
     font-weight: 600;
+    border-radius: 1.2rem;
+    border: 1px solid #e3eaf2;
+    background: #fff;
+    color: #41566d;
     cursor: pointer;
-    margin-bottom: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 74, 135, 0.2);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
 }
 
 #open-slides-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 74, 135, 0.3);
-    background: #003366;
+    background: #f5f8fc;
+    box-shadow: 0 2px 6px rgba(10, 37, 64, 0.1);
 }
 
 #open-slides-btn:active {
-    transform: translateY(-1px);
+    transform: scale(0.97);
 }
 
 #fullscreen-overlay {
@@ -394,6 +492,92 @@ h1 {
     font-weight: bold;
     cursor: pointer;
     z-index: 1001;
+}
+
+#pdf-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+#pdf-list button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: #004a87;
+    border: 2px solid #e0e0e0;
+    padding: 2rem 2.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+#pdf-list button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 74, 135, 0.2);
+    border-color: #004a87;
+}
+
+#pdf-list button:active {
+    transform: translateY(-1px);
+}
+
+#pdf-viewer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+}
+
+#pdf-viewer.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#close-pdf-btn {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #fff;
+    background: #004a87;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2001;
+    box-shadow: 0 4px 15px rgba(0, 74, 135, 0.4);
+    transition: all 0.3s ease;
+    border: 2px solid white;
+}
+
+#close-pdf-btn:hover {
+    background: #003366;
+}
+
+#pdf-iframe {
+    width: 90%;
+    height: 90%;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+    background: white;
 }
 
 /* Responsive adjustments */

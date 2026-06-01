@@ -18,7 +18,6 @@
                 <nav>
                     <ul>
                         <li><a href="game.html">Game</a></li>
-                        <li><a href="resources.html">Resources</a></li>
                         <li><a href="index.html">Home</a></li>
                     </ul>
                 </nav>
@@ -29,14 +28,25 @@
 
                 <div class="content-container">
                     <div class="slides-section">
-                        <button id="open-slides-btn">Presentation</button>
-                        <iframe
-                            src="https://docs.google.com/presentation/d/e/2PACX-1vSEQ69njnceiyqEscziNZ0LLxAcGupY6imsdtgJr5O3biL4Hlzs3pkDz5gxTaAt_rove3I97t62g-wC/pubembed?start=true&loop=false&delayms=99999999"
-                            frameborder="0" allowfullscreen="true" mozallowfullscreen="true"
-                            webkitallowfullscreen="true"></iframe>
+                        <div class="slides-iframe-wrapper">
+                            <iframe id="slides-iframe"
+                                src="https://docs.google.com/presentation/d/e/2PACX-1vSEQ69njnceiyqEscziNZ0LLxAcGupY6imsdtgJr5O3biL4Hlzs3pkDz5gxTaAt_rove3I97t62g-wC/pubembed?start=true&loop=false&delayms=99999999"
+                                frameborder="0" allowfullscreen="true" mozallowfullscreen="true"
+                                webkitallowfullscreen="true"></iframe>
+                            <div class="slides-branding-cover"></div>
+                        </div>
+                        <div class="slides-control-bar">
+                            <button id="open-slides-btn">&#x26F6; Fullscreen</button>
+                        </div>
                         <div class="resources-text">Other Resources</div>
                         <div class="mathcounts-trainer-link">Mathcounts Trainer: <a
                                 href="https://artofproblemsolving.com/mathcounts_trainer">https://artofproblemsolving.com/mathcounts_trainer</a>
+                        </div>
+                        <div class="resources-text">PDFs</div>
+                        <div id="pdf-list"></div>
+                        <div id="pdf-viewer">
+                            <span id="close-pdf-btn">&times;</span>
+                            <iframe id="pdf-iframe" src="" frameborder="0"></iframe>
                         </div>
                     </div>
 
